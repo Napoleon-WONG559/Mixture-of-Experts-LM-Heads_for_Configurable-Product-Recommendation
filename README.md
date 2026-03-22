@@ -49,3 +49,73 @@
 |ModernBERT|44.1|44.9|64.9|
 |MoELMH(old)|45.8|47.0|**67.2**|
 |MoELMH(new)|**46.3**|**47.2**|**66.5**|
+
+# Theoretical foundation
+
+## Formal system
+
+We attempt to analyze the theoretical foundation of MoELMH from the view of linear regression. In this formal system, we compare the MoELMH method and baseline method. The baseline method refers to the model that uses a single linear layer for each attribute task respectively, while MoELMH allows expert linear layers to be shared among tasks.
+
+## Analysis object: Parameter Esimation Error
+
+In this formal system, we focus on the parameter estimation error to investigate how MoELMH method behaves differently from the baseline method.
+
+## Parameter Estimation Error of baseline method
+
+We start from looking at the estimation error of the baseline method.
+
+### Problem setup
+
+![image](./img/problem_setup.png)
+
+The data model in our problem is:
+![image](./img/problem_setup_data_model.png)
+
+The corresponding baseline model is:
+![image](./img/problem_setup_baseline.png)
+
+### Derivation
+
+#### Step 1
+![image](./img/baseline_error_step1.png)
+OLS estimator is obtained from:
+![image](./img/OLS_estimator_derivation.png)
+
+#### Step 2
+![image](./img/baseline_error_step2.png)
+This form of estimation error is derived from below. The below derivation is further proved under the appendix section.
+![image](./img/baseline_error_step2-1.png)
+![image](./img/baseline_error_step2-2.png)
+So we have the form of estimation error shown above as:
+![image](./img/baseline_error_step2-3.png)
+
+#### Step 3
+![image](./img/baseline_error_step3-1.png)
+![image](./img/baseline_error_step3-2.png)
+
+#### Appendix
+
+**For expectation's derivation**
+![image](./img/baseline_appendix_expect_0.png)
+![image](./img/baseline_appendix_expect_1.png)
+For the first term,
+![image](./img/baseline_appendix_expect_2.png)
+For the second term,
+![image](./img/baseline_appendix_expect_3.png)
+For the third term,
+![image](./img/baseline_appendix_expect_4.png)
+Combining these three terms, we have
+![image](./img/baseline_appendix_expect_5.png)
+Apply this identity to the estimation error, we have the form of expectation used in the step 2.
+![image](./img/baseline_appendix_expect_6.png)
+
+**For covariance's derivation**
+![image](./img/baseline_appendix_cov_1.png)
+We leverage two rules for covariance, the first rule is constant shift rule:
+![image](./img/baseline_appendix_cov_2.png)
+The second rule is linear transform rule:
+![image](./img/baseline_appendix_cov_3.png)
+Applying these two rules to the weight \tide{w_t}:
+![image](./img/baseline_appendix_cov_4.png)
+Finally, we substitute the noise term and we have the form of covariance used in the step 2.
+![image](./img/baseline_appendix_cov_5.png)
