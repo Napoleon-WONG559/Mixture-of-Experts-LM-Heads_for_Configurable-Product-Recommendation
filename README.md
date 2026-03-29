@@ -119,3 +119,54 @@ Applying these two rules to the weight \tide{w_t}:
 ![image](./img/baseline_appendix_cov_4.png)
 Finally, we substitute the noise term and we have the form of covariance used in the step 2.
 ![image](./img/baseline_appendix_cov_5.png)
+
+## Parameter Estimation Error of MoELMH
+
+### Setup
+
+**Data model**
+
+We have data model as below:
+![image](./img/MoE/MoE_problem_setup_datamodel.png)
+![image](./img/MoE/MoE_problem_setup_1.png)
+Turning data model into a matrix form.
+![image](./img/MoE/MoE_problem_setup_2.png)
+
+**Assumptions**
+
+![image](./img/MoE/MoE_assumption_1.png)
+Assumption 2 is supported by our mutual information loss. The MI loss in our framework encourage router network to assign a uniquely different expert LM head subset to different task.
+![image](./img/MoE/MoE_assumption_2.png)
+We assume the true model is saprse.
+![image](./img/MoE/MoE_assumption_3.png)
+![image](./img/MoE/MoE_assumption_4.png)
+
+**OLS Estimator**
+
+To avoid the identifiability problem and bilinear complication, we assume coefficient matrix ***A*** is known. To support this claim, we can adjust our framework by training the router network first and then the expert LM heads. That is we can train the coefficient matrix ***A*** and expert heads ***V*** separately. In this case, the trained coefficient matrix ***A*** can be treated as known when we train the expert LM heads ***V***.
+![image](./img/MoE/MoE_oracle_estimator.png)
+
+**Identifiability problem**
+
+![image](./img/MoE/MoE_identifiability_problem.png)
+
+### Derivation
+
+#### Step 1: Obtaining covariance of the expert *V*'s estimator
+![image](./img/MoE/MoE_proof_step_1.png)
+![image](./img/MoE/MoE_proof_step_2.png)
+
+#### Step 2: Obtaining covariance of the task parameter *W*'s estimator
+![image](./img/MoE/MoE_proof_step_3.png)
+![image](./img/MoE/MoE_proof_step_4.png)
+
+#### Step 3: Obtaining parameter estimation error for MoE
+![image](./img/MoE/MoE_proof_step_5.png)
+![image](./img/MoE/MoE_proof_step_6_1.png)
+![image](./img/MoE/MoE_proof_step_6_2.png)
+
+### Remark for extension to multi-class classification via One-vs-Rest
+
+**Our analysis is about structural insight, not loss-specific.**
+**Theory captures the mechanism(Statistical sharing effect), not exact loss.**
+![image](./img/MoE/MoE_remark_extension.png)
