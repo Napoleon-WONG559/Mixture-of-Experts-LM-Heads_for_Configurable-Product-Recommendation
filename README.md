@@ -170,3 +170,95 @@ To avoid the identifiability problem and bilinear complication, we assume coeffi
 **Our analysis is about structural insight, not loss-specific.**
 **Theory captures the mechanism(Statistical sharing effect), not exact loss.**
 ![image](./img/MoE/MoE_remark_extension.png)
+
+## Local Approximation Theorem connecting squared-loss surrogate and cross-entropy loss formulation
+
+### Setup
+
+**Data model**
+![image](./img/local_approx/cross_entropy_model.png)
+
+**Assumptions: Non-degeneracy (bounded probabilities)**
+
+> Besides the 4 assumptions(A1-A4) introduced in the analysis for MoE method, we introduce one more assumption:
+
+![image](./img/local_approx/local_approx_assumption.png)
+
+**Estimator**
+
+![image](./img/local_approx/cross_entropy_estimator.png)
+
+### Local quadratic form of cross-entropy loss around optimum
+
+**Squared Loss's Reminder**: Originally, we are analyzing the squared loss. The squared loss has the following form for our data model Y=HVA.
+![image](./img/local_approx/squared_loss_form_1.png)
+![image](./img/local_approx/squared_loss_form_2.png)
+Then we apply Taylor expansion on the cross-entropy loss and compare the expansion with the above squared loss. 
+![image](./img/local_approx/cross_entropy_taylor_expan.png)
+Based on the local approximation of cross-entropy loss to squared loss, we apply our previous anlaysis results to the cross-entropy loss under local approximation setting.
+
+**Application of previous analysis result**: 
+
+#### step 1: Covariance of expert V
+From the previous analysis result, we knew that the covariance has the below form:
+![image](./img/MoE/MoE_proof_step_2.png)
+In squared loss case, the covariance is calculated by the following 
+> (AA \otimes HH)^-1
+
+Similarly in quadratic form of cross-entropy loss, the covariance is calculated by the following term
+> Hessian of cross-entropy L on expert V = nabla^2 L(V)
+
+That is:
+> Cov(V) = (Hessian of cross-entropy L on expert V)^-1 = (nabla^2 L(V))^-1
+
+**Note**: The above solution of Cov(V) can be rigorously derived. The detail of derivation will be placed in appendix.
+
+#### step 2: Analysis on Hessian matrix
+We derive and analyze the structure of the Hessian matrix as below. The Hessian matrix can be derived by taking the derivative of the cross-entropy loss twice.
+![image](./img/local_approx/Hessian_structrue_1.png)
+![image](./img/local_approx/Hessian_structrue_2.png)
+![image](./img/local_approx/Hessian_structrue_3.png)
+
+#### step 3: Parameter estimation error
+With the structure of the Hessian matrix, we apply the Hessian to the parameter estimation error.
+![image](./img/local_approx/para_estim_error_bound_1.png)
+![image](./img/local_approx/para_estim_error_bound_2.png)
+Finally, we transfer our original results under squared loss surrogate to the cross-entropy loss formulation.
+
+### Appendix
+
+#### Covariance = (Hessian)^-1
+
+The cross-entropy loss in our problem is as below:
+![image](./img/local_approx/covariance_setup_cross_entropy_loss_1.png)
+We formulate the first and second derivative of cross-entropy loss as follows:
+![image](./img/local_approx/covariance_setup_cross_entropy_loss_2.png)
+
+Then we apply the Taylor expansion to the first derivative of cross-entropy loss around the optimum to derive the solution of the estimator \theta^\hat.
+![image](./img/local_approx/covariance_taylor_expansion.png)
+
+With the solution of the estimator \theta^\hat, we take covariance for both sides.
+![image](./img/local_approx/covariance_derivation.png)
+
+Then we calculate the Cov(\nabla L) and \nabla^2 L respectively.
+
+For Cov(\nabla L):
+![image](./img/local_approx/covariance_cov_gradient.png)
+For \nabla^2 L:
+We have an identity stating the equivalence of Hessian and Fisher information as below:
+![image](./img/local_approx/identity_Hessian_Fisher.png)
+Therefore, 
+![image](./img/local_approx/covariance_hessian.png)
+
+Now we can derive the covariance of the expert parameter as below. The result reveal that the covariance approximate the inverse of the Hessian.
+![image](./img/local_approx/covariance_result.png)
+
+#### Bias term in MSE parameter estimation error
+Since our estimator is derived from the cross-entropy loss formulation now, the estimator become biased causing the non-zero bias term. **Note**: The estimator in squared loss setting is unbiased so the bias term is zero in squared loss setting.
+
+Now the MSE parameter estimation error in our problem is as below. The first term is the tr(Cov) which is already finished above. The second term is the bias term and the bias term can be shown negligible to the first term, so that we can ignore the bias term and focus on the first term.
+![image](./img/local_approx/MSE_param_estim_error.png)
+We present a concise argument below to show that the bias term is negligible compared to the the first term tr(Cov).
+![image](./img/local_approx/MSE_bias_term_1.png)
+![image](./img/local_approx/MSE_bias_term_2.png)
+![image](./img/local_approx/MSE_bias_term_3.png)
